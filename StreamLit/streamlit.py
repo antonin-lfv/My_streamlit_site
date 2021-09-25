@@ -386,7 +386,7 @@ if choix_page=="Simulation épidémie":
                            y=x[:, 1]))
 
     # création des courbes finales et listes des coordonnées
-    data = dict(courbe_sains=[], courbe_infectes=[], courbe_immunises=[], courbe_deces=[], courbe_removed=[],
+    data = dict(courbe_sains=[], courbe_infectes=[], courbe_immunises=[], courbe_deces=[],
                 coord_infectes=[], coord_sains=[], coord_immunises=[], coord_deces=[])
 
     numero_infecte_1 = rd.randint(0, nb_individu - 1)  # on choisit le premier individu infecté au hasard
@@ -404,7 +404,6 @@ if choix_page=="Simulation épidémie":
     data['courbe_infectes'].append(1)
     data['courbe_immunises'].append(0)
     data['courbe_deces'].append(0)
-    data['courbe_removed'].append(0)
 
     # Jours 2 à n
 
@@ -431,7 +430,6 @@ if choix_page=="Simulation épidémie":
         data['courbe_infectes'].append(len(data['coord_infectes']))
         data['courbe_immunises'].append(len(data['coord_immunises']))
         data['courbe_deces'].append(len(data['coord_deces']))
-        data['courbe_removed'].append(len(data['coord_immunises']) + len(data['coord_deces']))
 
     if data['coord_sains']:
         fig.add_trace(
@@ -497,9 +495,6 @@ if choix_page=="Simulation épidémie":
     fig.add_trace(
         go.Scatter(x=x_courbe, y=data['courbe_deces'], marker=dict(color='#AB63FA'), marker_line=dict(width=1),
                    showlegend=False, name="décédés", yaxis="y4", ), 2, 1)
-    fig.add_trace(
-        go.Scatter(x=x_courbe, y=data['courbe_removed'], marker=dict(color='#000000'), marker_line=dict(width=1),
-                   showlegend=False, name="removed", yaxis="y5", ), 2, 1)
     fig.update_xaxes(title_text="jours", row=2, col=1)
     fig.update_yaxes(title_text="nombre d'individus", row=2, col=1)
     fig.add_annotation(text="Maximum d'infectés", x=data['courbe_infectes'].index(max(data['courbe_infectes'])),
