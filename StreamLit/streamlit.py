@@ -9,6 +9,7 @@ import numpy as np
 from fastdist import fastdist
 import random as rd
 from sklearn.datasets import make_blobs
+import itertools
 
 
 st.set_page_config(layout="wide", )
@@ -92,9 +93,20 @@ if choix_page=="DashBoard StockPrices":
     GOOG['Date']=GOOG.index
     NTDOY = yf.download("NTDOY", start=start, end="{}".format(d1))
     NTDOY['Date']=NTDOY.index
+    BTC_USD = yf.download("BTC-USD", start=start, end="{}".format(d1))
+    BTC_USD['Date']=BTC_USD.index
+    ETH_USD = yf.download("ETH-USD", start=start, end="{}".format(d1))
+    ETH_USD['Date']=ETH_USD.index
+    DOGE_USD = yf.download("DOGE-USD", start=start, end="{}".format(d1))
+    DOGE_USD['Date']=DOGE_USD.index
+    LITE_USD = yf.download("LTC-USD", start=start, end="{}".format(d1))
+    LITE_USD['Date']=LITE_USD.index
 
     SP = {
-        'Apple':AAPL,
+        'Bitcoin':BTC_USD,
+        'Ethereum':ETH_USD,
+        'Dogecoin':DOGE_USD,
+        'Apple': AAPL,
         'Microsoft':MSFT,
         'Intel':INTC,
         'Tesla':TSLA,
@@ -106,24 +118,25 @@ if choix_page=="DashBoard StockPrices":
     # STREAMLIT :
     ###############################################################
     # selectbox à gauche :
+    options_devises = [*itertools.permutations([*SP])]
     slider_1 = st.sidebar.selectbox(
         'Choisissez un 1er cours',
-        ('Apple', 'Microsoft', 'Intel', 'Tesla', 'Gold', 'Google', 'Nintendo'),
+        options_devises[0]
     )
 
     slider_2 = st.sidebar.selectbox(
         'Choisissez un 2e cours',
-        ('Microsoft', 'Apple', 'Intel', 'Tesla', 'Gold', 'Google', 'Nintendo')
+        options_devises[int(len(options_devises)/len(SP))+1]
     )
 
     slider_3 = st.sidebar.selectbox(
         'Choisissez un 3er cours',
-        ('Intel', 'Apple', 'Microsoft', 'Tesla', 'Gold', 'Google', 'Nintendo')
+        [*itertools.permutations([*SP])][int(len(options_devises)/len(SP))*2+1]
     )
 
     slider_4 = st.sidebar.selectbox(
         'Choisissez un 4e cours',
-        ('Tesla', 'Apple', 'Microsoft', 'Intel', 'Gold', 'Google', 'Nintendo')
+        options_devises[int(len(options_devises)/len(SP))*3+1]
     )
 
     df1 = SP[slider_1]
@@ -133,7 +146,7 @@ if choix_page=="DashBoard StockPrices":
 
     # choix fenetre
     fenetre = st.sidebar.slider('Saisir une fenêtre (jours)', min_value=2,max_value=268, value=50)
-    st.subheader('Cours des actions de '+slider_1+', '+slider_2+', '+slider_3+', '+slider_4+' sur une fenêtre de '+str(fenetre)+' jours\n')
+    st.subheader('Cours de '+slider_1+', '+slider_2+', '+slider_3+', '+slider_4+' sur une fenêtre de '+str(fenetre)+' jours\n')
     ###############################################################
 
     vert = '#599673'
