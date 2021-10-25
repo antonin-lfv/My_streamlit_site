@@ -6,4 +6,3 @@ fastdist
 sklearn
 numba
 pip
-itertools
