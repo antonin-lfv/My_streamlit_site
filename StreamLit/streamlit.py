@@ -99,6 +99,7 @@ if choix_page=="Accueil":
 """
 
 
+
 if choix_page=="DashBoard StockPrices":
 
     st.markdown('<p class="first_titre">DashBoard StockPrices</p>', unsafe_allow_html=True)
