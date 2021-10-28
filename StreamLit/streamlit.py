@@ -11,7 +11,6 @@ import random as rd
 from sklearn.datasets import make_blobs
 import itertools
 
-
 st.set_page_config(layout="wide", )
 # streamlit run StreamLit/streamlit.py
 st.markdown("""
@@ -52,16 +51,53 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
-
 # Pages
 PAGES = ["Accueil", "DashBoard StockPrices", "Simulation épidémie"]
 st.sidebar.title('Mes projets :bulb:')
 choix_page = st.sidebar.selectbox(label="Choisissez un projet", options=PAGES)
 
+
+
+
+
+"""
+              _____    _____   _    _   ______   _____   _      
+     /\      / ____|  / ____| | |  | | |  ____| |_   _| | |     
+    /  \    | |      | |      | |  | | | |__      | |   | |     
+   / /\ \   | |      | |      | |  | | |  __|     | |   | |     
+  / ____ \  | |____  | |____  | |__| | | |____   _| |_  | |____ 
+ /_/    \_\  \_____|  \_____|  \____/  |______| |_____| |______|
+                                                                                                                                                                                                              
+"""
+
+
 if choix_page=="Accueil":
     st.markdown('<p class="first_titre">Bienvenue sur mon site Streamlit</p>', unsafe_allow_html=True)
     st.write("##")
     st.write("Ici vous retrouverez les Dashboards liés à mes projets disponibles sur mon site web https://antonin-lfv.github.io/. ")
+
+
+
+
+
+
+
+
+
+
+"""
+
+   _____   _                    _      _____           _                     
+  / ____| | |                  | |    |  __ \         (_)                    
+ | (___   | |_    ___     ___  | | __ | |__) |  _ __   _    ___    ___   ___ 
+  \___ \  | __|  / _ \   / __| | |/ / |  ___/  | '__| | |  / __|  / _ \ / __|
+  ____) | | |_  | (_) | | (__  |   <  | |      | |    | | | (__  |  __/ \__ \
+ |_____/   \__|  \___/   \___| |_|\_\ |_|      |_|    |_|  \___|  \___| |___/
+                                                                             
+                                                                             
+
+"""
+
 
 if choix_page=="DashBoard StockPrices":
 
@@ -336,6 +372,27 @@ if choix_page=="DashBoard StockPrices":
 
     st.plotly_chart(fig)
 
+
+
+
+
+
+
+
+"""
+
+    __            _       _     __               _           _                   _        
+  _/_/_          (_)     | |   /_/              (_)         | |                 (_)       
+ | ____|  _ __    _    __| |   ___   _ __ ___    _    ___   | |   ___     __ _   _    ___ 
+ |  _|   | '_ \  | |  / _` |  / _ \ | '_ ` _ \  | |  / _ \  | |  / _ \   / _` | | |  / _ \
+ | |___  | |_) | | | | (_| | |  __/ | | | | | | | | | (_) | | | | (_) | | (_| | | | |  __/
+ |_____| | .__/  |_|  \__,_|  \___| |_| |_| |_| |_|  \___/  |_|  \___/   \__, | |_|  \___|
+         | |                                                              __/ |           
+         |_|                                                             |___/            
+
+"""
+
+
 if choix_page=="Simulation épidémie":
     st.markdown('<p class="first_titre">Simulation épidémiologique</p>', unsafe_allow_html=True)
     st.write('##')
@@ -535,4 +592,3 @@ if choix_page=="Simulation épidémie":
         plot_bgcolor='rgba(0,0,0,0)',
     )
     st.plotly_chart(fig)
-
