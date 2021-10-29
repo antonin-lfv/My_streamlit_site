@@ -134,14 +134,11 @@ if choix_page=="DashBoard StockPrices":
     DOGE_USD['Date']=DOGE_USD.index
     LITE_USD = yf.download("LTC-USD", start=start, end="{}".format(d1))
     LITE_USD['Date']=LITE_USD.index
-    USDT_USD = yf.download("USDT-USD", start=start, end="{}".format(d1))
-    USDT_USD['Date']=USDT_USD.index
 
     SP = {
         'Bitcoin':BTC_USD,
         'Ethereum':ETH_USD,
         'Dogecoin':DOGE_USD,
-        'Tether USD':USDT_USD,
         'Apple': AAPL,
         'Microsoft':MSFT,
         'Intel':INTC,
