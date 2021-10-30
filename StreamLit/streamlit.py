@@ -84,7 +84,6 @@ if choix_page=="Accueil":
 
 
 
-
 #   _____   _                    _      _____           _
 #  / ____| | |                  | |    |  __ \         (_)
 # | (___   | |_    ___     ___  | | __ | |__) |  _ __   _    ___    ___   ___
@@ -130,15 +129,12 @@ if choix_page=="DashBoard StockPrices":
     BTC_USD['Date']=BTC_USD.index
     ETH_USD = yf.download("ETH-USD", start=start, end="{}".format(d1))
     ETH_USD['Date']=ETH_USD.index
-    DOGE_USD = yf.download("DOGE-USD", start=start, end="{}".format(d1))
-    DOGE_USD['Date']=DOGE_USD.index
     LITE_USD = yf.download("LTC-USD", start=start, end="{}".format(d1))
     LITE_USD['Date']=LITE_USD.index
 
     SP = {
         'Bitcoin':BTC_USD,
         'Ethereum':ETH_USD,
-        'Dogecoin':DOGE_USD,
         'Apple': AAPL,
         'Microsoft':MSFT,
         'Intel':INTC,
@@ -179,107 +175,35 @@ if choix_page=="DashBoard StockPrices":
 
     # choix fenetre
     fenetre = st.sidebar.slider('Saisir une fenêtre (jours)', min_value=2,max_value=268, value=50)
-    st.subheader('Cours de '+slider_1+', '+slider_2+', '+slider_3+', '+slider_4+' sur une fenêtre de '+str(fenetre)+' jours\n')
+    st.subheader('Cours de '+slider_1+', '+slider_2+', '+slider_3+', '+slider_4+' (fenêtre de '+str(fenetre)+' jours)\n')
+    st.write("##")
     ###############################################################
 
     vert = '#599673'
     rouge = '#e95142'
 
-    fig = make_subplots(rows=4, cols=2,
-                        specs=[[{'type': 'xy'},{'type':'indicator'}] for i in range (4)],
-                        column_widths=[0.85, 0.15],
-                        shared_xaxes=True,
-                        subplot_titles=[slider_1, '', slider_2, '',slider_3, '',slider_4,''])
-
-    # courbes #####################
-
+    st.write(st.session_state)
     def couleur(df):
         if df['Close'].iloc[-1*fenetre]-df['Close'].iloc[-1] < 0 :
             return vert
         else : return rouge
 
-    fig.add_trace(go.Scatter(
-        y = df1['Close'],
-        x = df1['Date'],
-        line=dict(color=couleur(df1), width=1),
-        name="",
-        hovertemplate=
-        "Date: %{x}<br>" +
-        "Close: %{y}<br>"+
-        "Volume: %{text}<br>",
-        text = df1.Volume,
-    ), row=1, col=1)
+    ###################### courbe 1 #####################
 
-    fig.add_trace(go.Scatter(
-        y = df2['Close'],
-        x = df2['Date'],
-        line=dict(color=couleur(df2), width=1),
-        name="",
-        hovertemplate=
-        "Date: %{x}<br>" +
-        "Close: %{y}<br>"+
-        "Volume: %{text}<br>",
-        text = df2.Volume,
-    ), row=2, col=1)
+    fig1 = make_subplots(rows=1, cols=2,
+                        specs=[[{'type': 'xy'},{'type':'indicator'}]],
+                        column_widths=[0.85, 0.15],
+                        subplot_titles=[slider_1, ''])
 
-    fig.add_trace(go.Scatter(
-        y = df3['Close'],
-        x = df3['Date'],
-        line=dict(color=couleur(df3), width=1),
-        name="",
-        hovertemplate=
-        "Date: %{x}<br>" +
-        "Close: %{y}<br>"+
-        "Volume: %{text}<br>",
-        text = df3.Volume,
-    ), row=3, col=1)
-
-
-    fig.add_trace(go.Scatter(
-        y = df4['Close'],
-        x = df4['Date'],
-        line=dict(color=couleur(df4), width=1),
-        name="",
-        hovertemplate=
-        "Date: %{x}<br>" +
-        "Close: %{y}<br>"+
-        "Volume: %{text}<br>",
-        text = df4.Volume,
-    ), row=4, col=1)
-
-
-    fig.add_hline(y=df1['Close'].iloc[0],
+    fig1.add_hline(y=df1['Close'].iloc[0],
                   line_dash="dot",
                   annotation_text="{}".format(df1['Date'][0].date()),
                   annotation_position="bottom left",
                   line_width=2, line=dict(color='black'),
                   annotation=dict(font_size=10),
                   row=1, col=1)
-    fig.add_hline(y=df2['Close'].iloc[0],
-                  line_dash="dot",
-                  annotation_text="{}".format(df2['Date'][0].date()),
-                  annotation_position="bottom left",
-                  line_width=2, line=dict(color='black'),
-                  annotation=dict(font_size=10),
-                  row=2, col=1)
-    fig.add_hline(y=df3['Close'].iloc[0],
-                  line_dash="dot",
-                  annotation_text="{}".format(df3['Date'][0].date()),
-                  annotation_position="bottom left",
-                  line_width=2, line=dict(color='black'),
-                  annotation=dict(font_size=10),
-                  row=3, col=1)
-    fig.add_hline(y=df4['Close'].iloc[0],
-                  line_dash="dot",
-                  annotation_text="{}".format(df4['Date'][0].date()),
-                  annotation_position="bottom left",
-                  line_width=2, line=dict(color='black'),
-                  annotation=dict(font_size=10),
-                  row=4, col=1)
 
-    # Indicateurs #####################
-
-    fig.add_trace(go.Indicator(
+    fig1.add_trace(go.Indicator(
         mode = "number+delta",
         value = round(df1['Close'].iloc[-1],4),
         number={'prefix': "$", 'font_size' : 40},
@@ -288,86 +212,268 @@ if choix_page=="DashBoard StockPrices":
         domain = {'y': [0.5, 0.7], 'x': [0.55, 0.75]}),
     row=1, col=2)
 
-    fig.add_trace(go.Indicator(
+    fig1.update_layout(
+        template='simple_white',
+        showlegend=False,
+        font=dict(size=10),
+        autosize=False,
+        width=1600, height=200,
+        margin=dict(l=40, r=500, b=40, t=40),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showticklabels=True,
+    )
+    btn_text_chart1 = 'Candle'+slider_1
+    if btn_text_chart1 not in st.session_state:
+        st.session_state[btn_text_chart1] = False
+    if st.session_state[btn_text_chart1]:
+        fig1.add_trace(go.Candlestick(x=df1['Date'],
+                        open=df1['Open'], high=df1['High'],
+                        low=df1['Low'], close=df1['Close'],
+                        name=""))
+        fig1.update_layout(xaxis_rangeslider_visible=False)
+        st.plotly_chart(fig1)
+        btn_chart1 = st.button('Line '+slider_1)
+        st.session_state[btn_text_chart1] = False
+    else:
+        fig1.add_trace(go.Scatter(
+            y=df1['Close'],
+            x=df1['Date'],
+            line=dict(color=couleur(df1), width=1),
+            name="",
+            hovertemplate=
+            "Date: %{x}<br>" +
+            "Close: %{y}<br>" +
+            "Volume: %{text}<br>",
+            text=df1.Volume,
+        ), row=1, col=1)
+        if fenetre > 1:
+            fig1.add_shape(type="rect",
+                          xref="x", yref="y",
+                          x0=df1['Date'].iloc[-1 * fenetre].date().strftime('%Y-%m-%d'), y0=df1['Close'].min(),
+                          x1=d1, y1=df1['Close'].max(),
+                          fillcolor=couleur(df1),
+                          row=1, col=1
+                          )
+        st.plotly_chart(fig1)
+        btn_chart1 = st.button('Candles '+slider_1)
+        st.session_state[btn_text_chart1] = True
+
+
+    ###################### courbe 2 #####################
+
+    fig2 = make_subplots(rows=1, cols=2,
+                        specs=[[{'type': 'xy'},{'type':'indicator'}]],
+                        column_widths=[0.85, 0.15],
+                        subplot_titles=[slider_2, ''])
+
+    fig2.add_hline(y=df2['Close'].iloc[0],
+                  line_dash="dot",
+                  annotation_text="{}".format(df2['Date'][0].date()),
+                  annotation_position="bottom left",
+                  line_width=2, line=dict(color='black'),
+                  annotation=dict(font_size=10),
+                  row=1, col=1)
+
+    fig2.add_trace(go.Indicator(
         mode = "number+delta",
         value = round(df2['Close'].iloc[-1],4),
         number={'prefix': "$", 'font_size' : 40},
         delta = {"reference": df2['Close'].iloc[-1*fenetre], "valueformat": ".6f", "position" : "bottom", "relative":False},
         title = {"text": slider_2+" Since {}-days".format(fenetre)},
         domain = {'y': [0.5, 0.7], 'x': [0.55, 0.75]}),
-    row=2, col=2)
+    row=1, col=2)
 
-    fig.add_trace(go.Indicator(
+    fig2.update_layout(
+        template='simple_white',
+        showlegend=False,
+        font=dict(size=10),
+        autosize=False,
+        width=1600, height=200,
+        margin=dict(l=40, r=500, b=40, t=40),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showticklabels=True,
+    )
+    btn_text_chart2 = 'Candle'+slider_2
+    if btn_text_chart2 not in st.session_state:
+        st.session_state[btn_text_chart2] = False
+    if st.session_state[btn_text_chart2]:
+        fig2.add_trace(go.Candlestick(x=df2['Date'],
+                        open=df2['Open'], high=df2['High'],
+                        low=df2['Low'], close=df2['Close'],
+                        name=""))
+        fig2.update_layout(xaxis_rangeslider_visible=False)
+        st.plotly_chart(fig2)
+        btn_chart2 = st.button('Line '+slider_2)
+        st.session_state[btn_text_chart2] = False
+    else:
+        fig2.add_trace(go.Scatter(
+            y=df2['Close'],
+            x=df2['Date'],
+            line=dict(color=couleur(df2), width=1),
+            name="",
+            hovertemplate=
+            "Date: %{x}<br>" +
+            "Close: %{y}<br>" +
+            "Volume: %{text}<br>",
+            text=df2.Volume,
+        ), row=1, col=1)
+        if fenetre > 1:
+            fig2.add_shape(type="rect",
+                          xref="x", yref="y",
+                          x0=df2['Date'].iloc[-1 * fenetre].date().strftime('%Y-%m-%d'), y0=df2['Close'].min(),
+                          x1=d1, y1=df2['Close'].max(),
+                          fillcolor=couleur(df2),
+                          row=1, col=1
+                          )
+        st.plotly_chart(fig2)
+        btn_chart2 = st.button('Candles '+slider_2)
+        st.session_state[btn_text_chart2] = True
+
+
+    ###################### courbe 3 #####################
+
+    fig3 = make_subplots(rows=1, cols=2,
+                        specs=[[{'type': 'xy'},{'type':'indicator'}]],
+                        column_widths=[0.85, 0.15],
+                        subplot_titles=[slider_3, ''])
+
+    fig3.add_hline(y=df3['Close'].iloc[0],
+                  line_dash="dot",
+                  annotation_text="{}".format(df3['Date'][0].date()),
+                  annotation_position="bottom left",
+                  line_width=2, line=dict(color='black'),
+                  annotation=dict(font_size=10),
+                  row=1, col=1)
+
+    fig3.add_trace(go.Indicator(
         mode = "number+delta",
         value = round(df3['Close'].iloc[-1],4),
         number={'prefix': "$", 'font_size' : 40},
         delta = {"reference": df3['Close'].iloc[-1*fenetre], "valueformat": ".6f", "position" : "bottom", "relative":False},
         title = {"text": slider_3+" Since {}-days".format(fenetre)},
         domain = {'y': [0.5, 0.7], 'x': [0.55, 0.75]}),
-    row=3, col=2)
+    row=1, col=2)
 
-    fig.add_trace(go.Indicator(
+    fig3.update_layout(
+        template='simple_white',
+        showlegend=False,
+        font=dict(size=10),
+        autosize=False,
+        width=1600, height=200,
+        margin=dict(l=40, r=500, b=40, t=40),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showticklabels=True,
+    )
+    btn_text_chart3 = 'Candle'+slider_3
+    if btn_text_chart3 not in st.session_state:
+        st.session_state[btn_text_chart3] = False
+    if st.session_state[btn_text_chart3]:
+        fig3.add_trace(go.Candlestick(x=df3['Date'],
+                        open=df3['Open'], high=df3['High'],
+                        low=df3['Low'], close=df3['Close'],
+                        name=""))
+        fig3.update_layout(xaxis_rangeslider_visible=False)
+        st.plotly_chart(fig3)
+        btn_chart3 = st.button('Line '+slider_3)
+        st.session_state[btn_text_chart3] = False
+    else:
+        fig3.add_trace(go.Scatter(
+            y=df3['Close'],
+            x=df3['Date'],
+            line=dict(color=couleur(df3), width=1),
+            name="",
+            hovertemplate=
+            "Date: %{x}<br>" +
+            "Close: %{y}<br>" +
+            "Volume: %{text}<br>",
+            text=df3.Volume,
+        ), row=1, col=1)
+        if fenetre > 1:
+            fig3.add_shape(type="rect",
+                          xref="x", yref="y",
+                          x0=df3['Date'].iloc[-1 * fenetre].date().strftime('%Y-%m-%d'), y0=df3['Close'].min(),
+                          x1=d1, y1=df3['Close'].max(),
+                          fillcolor=couleur(df3),
+                          row=1, col=1
+                          )
+        st.plotly_chart(fig3)
+        btn_chart3 = st.button('Candles '+slider_3)
+        st.session_state[btn_text_chart3] = True
+
+
+    ###################### courbe 4 #####################
+
+    fig4 = make_subplots(rows=1, cols=2,
+                        specs=[[{'type': 'xy'},{'type':'indicator'}]],
+                        column_widths=[0.85, 0.15],
+                        subplot_titles=[slider_4, ''])
+
+    fig4.add_hline(y=df4['Close'].iloc[0],
+                  line_dash="dot",
+                  annotation_text="{}".format(df4['Date'][0].date()),
+                  annotation_position="bottom left",
+                  line_width=2, line=dict(color='black'),
+                  annotation=dict(font_size=10),
+                  row=1, col=1)
+
+    fig4.add_trace(go.Indicator(
         mode = "number+delta",
         value = round(df4['Close'].iloc[-1],4),
         number={'prefix': "$", 'font_size' : 40},
         delta = {"reference": df4['Close'].iloc[-1*fenetre], "valueformat": ".6f", "position" : "bottom", "relative":False},
         title = {"text": slider_4+" Since {}-days".format(fenetre)},
         domain = {'y': [0.5, 0.7], 'x': [0.55, 0.75]}),
-        row=4, col=2)
+    row=1, col=2)
 
-    # Rectangle des i (fenetre) derniers jours + moyenne
-
-    if fenetre > 1 :
-        fig.add_shape(type="rect",
-                      xref="x", yref="y",
-                      x0=df1['Date'].iloc[-1*fenetre].date().strftime('%Y-%m-%d'), y0=df1['Close'].min(),
-                      x1=d1, y1=df1['Close'].max(),
-                      fillcolor=couleur(df1),
-                      row=1, col=1
-                      )
-
-        fig.add_shape(type="rect",
-                      xref="x", yref="y",
-                      x0=df2['Date'].iloc[-1*fenetre].date().strftime('%Y-%m-%d'), y0=df2['Close'].min(),
-                      x1=d1, y1=df2['Close'].max(),
-                      fillcolor=couleur(df2),
-                      row=2, col=1
-                      )
-        fig.add_shape(type="rect",
-                      xref="x", yref="y",
-                      x0=df3['Date'].iloc[-1*fenetre].date().strftime('%Y-%m-%d'), y0=df3['Close'].min(),
-                      x1=d1, y1=df3['Close'].max(),
-                      fillcolor=couleur(df3),
-                      row=3, col=1
-                      )
-        fig.add_shape(type="rect",
-                      xref="x", yref="y",
-                      x0=df4['Date'].iloc[-1*fenetre].date().strftime('%Y-%m-%d'), y0=df4['Close'].min(),
-                      x1=d1, y1=df4['Close'].max(),
-                      fillcolor=couleur(df4),
-                      row=4, col=1
-                      )
-
-    # layout #############
-
-    fig.update_layout(
+    fig4.update_layout(
         template='simple_white',
         showlegend=False,
         font=dict(size=10),
         autosize=False,
-        width=1600, height=1000,
+        width=1600, height=200,
         margin=dict(l=40, r=500, b=40, t=40),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         xaxis_showticklabels=True,
-        xaxis2_showticklabels = True,
-        xaxis3_showticklabels=True,
     )
-
-    st.plotly_chart(fig)
-
-
-
+    btn_text_chart4 = 'Candle'+slider_4
+    if btn_text_chart4 not in st.session_state:
+        st.session_state[btn_text_chart4] = False
+    if st.session_state[btn_text_chart4]:
+        fig4.add_trace(go.Candlestick(x=df4['Date'],
+                        open=df4['Open'], high=df4['High'],
+                        low=df4['Low'], close=df4['Close'],
+                        name=""))
+        fig4.update_layout(xaxis_rangeslider_visible=False)
+        st.plotly_chart(fig4)
+        btn_chart4 = st.button('Line '+slider_4)
+        st.session_state[btn_text_chart4] = False
+    else:
+        fig4.add_trace(go.Scatter(
+            y=df4['Close'],
+            x=df4['Date'],
+            line=dict(color=couleur(df4), width=1),
+            name="",
+            hovertemplate=
+            "Date: %{x}<br>" +
+            "Close: %{y}<br>" +
+            "Volume: %{text}<br>",
+            text=df4.Volume,
+        ), row=1, col=1)
+        if fenetre > 1:
+            fig4.add_shape(type="rect",
+                          xref="x", yref="y",
+                          x0=df4['Date'].iloc[-1 * fenetre].date().strftime('%Y-%m-%d'), y0=df4['Close'].min(),
+                          x1=d1, y1=df4['Close'].max(),
+                          fillcolor=couleur(df4),
+                          row=1, col=1
+                          )
+        st.plotly_chart(fig4)
+        btn_chart4 = st.button('Candles '+slider_4)
+        st.session_state[btn_text_chart4] = True
 
 
 
